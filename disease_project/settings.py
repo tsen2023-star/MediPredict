@@ -13,10 +13,29 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
+
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
     "127.0.0.1,localhost"
 ).split(",")
+
+# Automatically allow the Render hostname
+RENDER_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+
+if RENDER_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_HOSTNAME)
+
+# CSRF configuration for Render
+CSRF_TRUSTED_ORIGINS = []
+
+if RENDER_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{RENDER_HOSTNAME}"
+    )
+
+# HTTPS configuration behind Render's proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 
 # Applications
 INSTALLED_APPS = [
