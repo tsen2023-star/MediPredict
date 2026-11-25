@@ -1,0 +1,128 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | MediPredict{% endblock %}
+
+{% block content %}
+<section class="dashboard-section section-padding">
+  <div class="container">
+
+    <div class="dashboard-heading">
+      <div>
+        <span class="eyebrow">YOUR PERSONAL SPACE</span>
+        <h2>Welcome, {{ request.user.username }}!</h2>
+        <p>Explore prediction modules and review your previous results.</p>
+      </div>
+      <a href="{% url 'home' %}" class="btn btn-outline-primary">
+        <i class="bi bi-house me-1"></i> Home
+      </a>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="dashboard-stat">
+          <div class="stat-icon"><i class="bi bi-heart-pulse"></i></div>
+          <span>Prediction modules</span>
+          <h3>03</h3>
+          <small>Available modules</small>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="dashboard-stat">
+          <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
+          <span>Prediction history</span>
+          <h3>{{ history|length|default:"0" }}</h3>
+          <small>Saved records</small>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="dashboard-stat">
+          <div class="stat-icon"><i class="bi bi-person-check"></i></div>
+          <span>Account status</span>
+          <h3>Active</h3>
+          <small>Logged-in account</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-heading dashboard-subheading">
+      <span class="eyebrow">GET STARTED</span>
+      <h2>Choose a prediction module</h2>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="disease-card">
+          <div class="disease-icon heart-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+          <h4>Heart Disease</h4>
+          <p>Explore preliminary cardiovascular risk estimates.</p>
+          <a href="{% url 'predict_heart' %}" class="disease-link">Open module <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="disease-card">
+          <div class="disease-icon diabetes-icon"><i class="bi bi-droplet-fill"></i></div>
+          <h4>Diabetes</h4>
+          <p>Explore a prediction using selected health parameters.</p>
+          <a href="{% url 'predict_diabetes' %}" class="disease-link">Open module <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="disease-card">
+          <div class="disease-icon liver-icon"><i class="bi bi-bandaid-fill"></i></div>
+          <h4>Liver Disease</h4>
+          <p>Explore preliminary liver-related risk estimates.</p>
+          <a href="{% url 'predict_liver' %}" class="disease-link">Open module <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="history-card">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+          <span class="eyebrow">YOUR RECORDS</span>
+          <h4 class="mb-0">Recent prediction history</h4>
+        </div>
+      </div>
+
+      {% if history %}
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Disease</th>
+                <th>Risk score</th>
+                <th>Risk level</th>
+                <th>Model</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in history %}
+                <tr>
+                  <td>{{ item.created_at|date:"d M Y, H:i" }}</td>
+                  <td>{{ item.get_disease_display }}</td>
+                  <td>{{ item.risk_score|default:"—" }}</td>
+                  <td>{{ item.risk_level|default:"—" }}</td>
+                  <td>{{ item.model_used|default:"—" }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <i class="bi bi-clipboard2-data"></i>
+          <h5>No prediction records yet</h5>
+          <p>Your saved prediction history will appear here.</p>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

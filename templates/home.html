@@ -1,0 +1,351 @@
+
+{% extends 'base.html' %}
+
+{% block title %}MediPredict | Multiple Disease Prediction{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <div class="col-lg-6">
+        <div class="hero-content">
+
+          <span class="eyebrow">
+            <i class="bi bi-stars me-2"></i>
+            MACHINE LEARNING FOR HEALTH AWARENESS
+          </span>
+
+          <h1>
+            Understand your health.
+            <span>Make informed decisions.</span>
+          </h1>
+
+          <p class="hero-description">
+            Explore preliminary health-risk predictions for diabetes,
+            heart disease, and liver disease using machine learning.
+          </p>
+
+          <div class="hero-actions">
+            {% if user.is_authenticated %}
+              <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">
+                Go to dashboard
+                <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+            {% else %}
+              <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+                Get started
+                <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+
+              <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg">
+                Log in
+              </a>
+            {% endif %}
+          </div>
+
+          <div class="hero-trust">
+            <div class="trust-item">
+              <i class="bi bi-cpu"></i>
+              <span>ML-powered analysis</span>
+            </div>
+            <div class="trust-item">
+              <i class="bi bi-shield-check"></i>
+              <span>Health awareness tool</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="hero-visual">
+
+          <div class="hero-image-card">
+            <div class="hero-image-top">
+              <div>
+                <span class="small-label">HEALTH TECHNOLOGY</span>
+                <h5>Smarter health awareness</h5>
+              </div>
+              <span class="hero-image-icon">
+                <i class="bi bi-heart-pulse-fill"></i>
+              </span>
+            </div>
+
+            <div class="health-illustration">
+              <div class="illustration-circle circle-one"></div>
+              <div class="illustration-circle circle-two"></div>
+
+              <div class="health-center-icon">
+                <i class="bi bi-heart-pulse-fill"></i>
+              </div>
+
+              <div class="floating-icon floating-one">
+                <i class="bi bi-activity"></i>
+              </div>
+
+              <div class="floating-icon floating-two">
+                <i class="bi bi-capsule"></i>
+              </div>
+
+              <div class="floating-icon floating-three">
+                <i class="bi bi-shield-plus"></i>
+              </div>
+            </div>
+
+            <div class="hero-image-bottom">
+              <div>
+                <span class="small-label">YOUR HEALTH JOURNEY</span>
+                <strong>Awareness starts with information.</strong>
+              </div>
+              <i class="bi bi-arrow-up-right-circle-fill"></i>
+            </div>
+          </div>
+
+          <div class="hero-floating-card">
+            <i class="bi bi-clipboard2-pulse-fill"></i>
+            <div>
+              <strong>3 prediction modules</strong>
+              <span>Explore health conditions</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Statistics / Introduction -->
+<section class="intro-strip">
+  <div class="container">
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="intro-item">
+          <i class="bi bi-heart-pulse"></i>
+          <div>
+            <strong>Heart Disease</strong>
+            <span>Explore preliminary risk indicators</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="intro-item">
+          <i class="bi bi-droplet-half"></i>
+          <div>
+            <strong>Diabetes</strong>
+            <span>Review relevant health parameters</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="intro-item">
+          <i class="bi bi-bandaid"></i>
+          <div>
+            <strong>Liver Disease</strong>
+            <span>Explore model-based risk estimates</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Disease Prediction Section -->
+<section class="section-padding" id="predictions">
+  <div class="container">
+
+    <div class="section-heading text-center">
+      <span class="eyebrow">OUR PREDICTION MODULES</span>
+      <h2>Explore health conditions</h2>
+      <p>
+        Select a module to enter relevant health information and view
+        a preliminary machine-learning prediction.
+      </p>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Heart Disease -->
+      <div class="col-md-6 col-lg-4">
+        <div class="disease-card">
+          <div class="disease-icon heart-icon">
+            <i class="bi bi-heart-pulse-fill"></i>
+          </div>
+
+          <span class="disease-tag">PREDICTION MODULE 01</span>
+
+          <h4>Heart Disease</h4>
+
+          <p>
+            Explore a model-based assessment using selected
+            cardiovascular health parameters.
+          </p>
+
+          {% if user.is_authenticated %}
+            <a href="{% url 'predict_heart' %}" class="disease-link">
+              Explore module <i class="bi bi-arrow-right"></i>
+            </a>
+          {% else %}
+            <a href="{% url 'login' %}" class="disease-link">
+              Log in to explore <i class="bi bi-arrow-right"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+
+      <!-- Diabetes -->
+      <div class="col-md-6 col-lg-4">
+        <div class="disease-card">
+          <div class="disease-icon diabetes-icon">
+            <i class="bi bi-droplet-fill"></i>
+          </div>
+
+          <span class="disease-tag">PREDICTION MODULE 02</span>
+
+          <h4>Diabetes</h4>
+
+          <p>
+            Explore a preliminary prediction based on selected
+            metabolic and health-related information.
+          </p>
+
+          {% if user.is_authenticated %}
+            <a href="{% url 'predict_diabetes' %}" class="disease-link">
+              Explore module <i class="bi bi-arrow-right"></i>
+            </a>
+          {% else %}
+            <a href="{% url 'login' %}" class="disease-link">
+              Log in to explore <i class="bi bi-arrow-right"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+
+      <!-- Liver Disease -->
+      <div class="col-md-6 col-lg-4">
+        <div class="disease-card">
+          <div class="disease-icon liver-icon">
+            <i class="bi bi-bandaid-fill"></i>
+          </div>
+
+          <span class="disease-tag">PREDICTION MODULE 03</span>
+
+          <h4>Liver Disease</h4>
+
+          <p>
+            Explore a model-based assessment using selected
+            liver-related health parameters.
+          </p>
+
+          {% if user.is_authenticated %}
+            <a href="{% url 'predict_liver' %}" class="disease-link">
+              Explore module <i class="bi bi-arrow-right"></i>
+            </a>
+          {% else %}
+            <a href="{% url 'login' %}" class="disease-link">
+              Log in to explore <i class="bi bi-arrow-right"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- How It Works -->
+<section class="how-section" id="how-it-works">
+  <div class="container">
+
+    <div class="section-heading text-center">
+      <span class="eyebrow">SIMPLE PROCESS</span>
+      <h2>How MediPredict works</h2>
+      <p>
+        A simple process to explore preliminary machine-learning predictions.
+      </p>
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="step-card">
+          <span class="step-number">01</span>
+          <div class="step-icon">
+            <i class="bi bi-person-plus"></i>
+          </div>
+          <h5>Create an account</h5>
+          <p>
+            Register and log in to access the prediction modules
+            and other website features.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="step-card">
+          <span class="step-number">02</span>
+          <div class="step-icon">
+            <i class="bi bi-clipboard2-data"></i>
+          </div>
+          <h5>Enter information</h5>
+          <p>
+            Provide the requested health-related information
+            for your selected prediction module.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="step-card">
+          <span class="step-number">03</span>
+          <div class="step-icon">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <h5>View the result</h5>
+          <p>
+            Review the model output as an educational
+            health-awareness indicator.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Disclaimer -->
+<section class="disclaimer-section">
+  <div class="container">
+    <div class="disclaimer-card">
+      <div class="disclaimer-icon">
+        <i class="bi bi-info-circle-fill"></i>
+      </div>
+
+      <div>
+        <h5>Important medical disclaimer</h5>
+        <p>
+          MediPredict is an educational health-awareness project.
+          Its machine-learning predictions are preliminary estimates,
+          not medical diagnoses. Always consult a qualified healthcare
+          professional for medical advice, testing, or treatment decisions.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

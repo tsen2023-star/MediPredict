@@ -1,0 +1,65 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Hospitals | MediPredict{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+  <div class="container">
+
+    <div class="section-heading text-center">
+      <span class="eyebrow">HEALTHCARE DIRECTORY</span>
+      <h2>Find healthcare facilities</h2>
+      <p>Browse the hospital information available in the directory.</p>
+    </div>
+
+    <form method="GET" class="hospital-search mb-5">
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+        <input
+          type="text"
+          name="city"
+          class="form-control"
+          placeholder="Search by city"
+          value="{{ city|default:'' }}"
+        >
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </form>
+
+    <div class="row g-4">
+      {% for hospital in hospitals %}
+        <div class="col-md-6 col-lg-4">
+          <div class="hospital-card">
+            <div class="hospital-icon">
+              <i class="bi bi-hospital"></i>
+            </div>
+            <h5>{{ hospital.name }}</h5>
+            <p><i class="bi bi-geo-alt me-2"></i>{{ hospital.address }}</p>
+            <p><i class="bi bi-building me-2"></i>{{ hospital.city }}</p>
+
+            {% if hospital.phone %}
+              <p><i class="bi bi-telephone me-2"></i>{{ hospital.phone }}</p>
+            {% endif %}
+
+            {% if hospital.specialties %}
+              <div class="hospital-specialties">
+                {{ hospital.specialties }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="empty-state">
+            <i class="bi bi-hospital"></i>
+            <h5>No hospitals found</h5>
+            <p>Try searching with another city.</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}
