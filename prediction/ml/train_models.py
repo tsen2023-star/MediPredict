@@ -30,7 +30,13 @@ except ImportError:
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "datasets"
 OUT = Path(__file__).resolve().parent
-FILES = {"heart": ("heart.csv", "target"), "liver": ("liver.csv", "Dataset"), "diabetes": ("diabetes.csv", "Outcome")}
+FILES = {
+    "heart": ("heart.csv", "target"),
+    "liver": ("liver.csv", "Dataset"),
+    "diabetes": ("diabetes.csv", "Outcome"),
+    "kidney": ("kidney.csv", "target"),
+    "breast_cancer": ("breast_cancer.csv", "target"),
+}
 
 ALIASES = {
     "heart": {
@@ -59,6 +65,25 @@ ALIASES = {
         "skinthickness":"skin_thickness", "insulin":"insulin", "bmi":"bmi",
         "diabetespedigreefunction":"diabetes_pedigree_function",
         "age":"age"
+    },
+    "kidney": {
+        "age": "age", "bp": "bp", "bloodpressure": "bp",
+        "sg": "sg", "specificgravity": "sg",
+        "al": "al", "albumin": "al",
+        "su": "su", "sugar": "su",
+        "bgr": "bgr", "bloodglucoserandom": "bgr",
+        "bu": "bu", "bloodurea": "bu",
+        "sc": "sc", "serumcreatinine": "sc",
+        "sod": "sod", "sodium": "sod",
+        "pot": "pot", "potassium": "pot",
+        "hemo": "hemo", "hemoglobin": "hemo"
+    },
+    "breast_cancer": {
+        "radiusmean": "radius_mean", "texturemean": "texture_mean",
+        "perimetermean": "perimeter_mean", "areamean": "area_mean",
+        "smoothnessmean": "smoothness_mean", "compactnessmean": "compactness_mean",
+        "concavitymean": "concavity_mean", "concavepointsmean": "concave_points_mean",
+        "symmetrymean": "symmetry_mean", "fractaldimensionmean": "fractal_dimension_mean"
     }
 }
 
@@ -95,7 +120,9 @@ def load_data(disease, filename, target):
     expected = {
         "heart": ["age","sex","cp","trestbps","chol","fbs","restecg","thalach","exang","oldpeak","slope","ca","thal"],
         "liver": ["age","gender","total_bilirubin","direct_bilirubin","alkaline_phosphotase","alamine_aminotransferase","aspartate_aminotransferase","total_proteins","albumin","albumin_and_globulin_ratio"],
-        "diabetes": ["pregnancies","glucose","blood_pressure","skin_thickness","insulin","bmi","diabetes_pedigree_function","age"]
+        "diabetes": ["pregnancies","glucose","blood_pressure","skin_thickness","insulin","bmi","diabetes_pedigree_function","age"],
+        "kidney": ["age", "bp", "sg", "al", "su", "bgr", "bu", "sc", "sod", "pot", "hemo"],
+        "breast_cancer": ["radius_mean", "texture_mean", "perimeter_mean", "area_mean", "smoothness_mean", "compactness_mean", "concavity_mean", "concave_points_mean", "symmetry_mean", "fractal_dimension_mean"]
     }[disease]
     missing = [c for c in expected if c not in X.columns]
     if missing:

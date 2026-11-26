@@ -24,8 +24,9 @@
           </h1>
 
           <p class="hero-description">
-            Explore preliminary health-risk predictions for diabetes,
-            heart disease, and liver disease using machine learning.
+            Explore preliminary health-risk predictions for heart disease,
+            diabetes, liver disease, chronic kidney disease, and breast cancer
+            using validated machine learning models.
           </p>
 
           <div class="hero-actions">
@@ -251,6 +252,60 @@
 
           {% if user.is_authenticated %}
             <a href="{% url 'predict_liver' %}" class="disease-link">
+              Explore module <i class="bi bi-arrow-right"></i>
+            </a>
+          {% else %}
+            <a href="{% url 'login' %}" class="disease-link">
+              Log in to explore <i class="bi bi-arrow-right"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Chronic Kidney Disease -->
+      <div class="col-md-6 col-lg-6">
+        <div class="disease-card">
+          <div class="disease-icon" style="background: rgba(13, 202, 240, 0.15); color: #0dcaf0;">
+            <i class="bi bi-shield-plus"></i>
+          </div>
+
+          <span class="disease-tag">PREDICTION MODULE 04</span>
+
+          <h4>Chronic Kidney Disease</h4>
+
+          <p>
+            Assess renal filtration markers including serum creatinine, blood urea, albumin, hemoglobin, and specific gravity.
+          </p>
+
+          {% if user.is_authenticated %}
+            <a href="{% url 'predict_kidney' %}" class="disease-link">
+              Explore module <i class="bi bi-arrow-right"></i>
+            </a>
+          {% else %}
+            <a href="{% url 'login' %}" class="disease-link">
+              Log in to explore <i class="bi bi-arrow-right"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Breast Cancer -->
+      <div class="col-md-6 col-lg-6">
+        <div class="disease-card">
+          <div class="disease-icon" style="background: rgba(214, 51, 132, 0.15); color: #d63384;">
+            <i class="bi bi-gender-female"></i>
+          </div>
+
+          <span class="disease-tag">PREDICTION MODULE 05</span>
+
+          <h4>Breast Cancer (WDBC)</h4>
+
+          <p>
+            Evaluate fine-needle aspirate (FNA) digitized cytological features including radius, texture, smoothness, and concavity.
+          </p>
+
+          {% if user.is_authenticated %}
+            <a href="{% url 'predict_breast_cancer' %}" class="disease-link">
               Explore module <i class="bi bi-arrow-right"></i>
             </a>
           {% else %}

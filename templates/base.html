@@ -82,6 +82,16 @@
                   <i class="bi bi-bandaid-fill text-warning"></i> Liver Disease Check
                 </a>
               </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'predict_kidney' %}">
+                  <i class="bi bi-shield-plus text-info"></i> Kidney Disease Check
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'predict_breast_cancer' %}">
+                  <i class="bi bi-gender-female" style="color: #d63384;"></i> Breast Cancer Check
+                </a>
+              </li>
               <li><hr class="dropdown-divider"></li>
               <li>
                 <a class="dropdown-item d-flex align-items-center gap-2" href="{% url 'prediction_history' %}">
@@ -221,7 +231,7 @@
           <span>Medi<span>Predict</span></span>
         </a>
         <p class="text-white-50 small pe-lg-4">
-          MediPredict is an intelligent health-risk awareness platform leveraging machine learning to provide preliminary statistical assessments for Heart Disease, Diabetes, and Liver Disease.
+          MediPredict is an intelligent health-risk awareness platform leveraging machine learning to provide preliminary statistical assessments for Heart Disease, Diabetes, Liver Disease, Chronic Kidney Disease, and Breast Cancer.
         </p>
       </div>
 
@@ -258,6 +268,16 @@
           <li class="mb-2">
             <a href="{% url 'predict_liver' %}" class="text-white-50 text-decoration-none">
               <i class="bi bi-bandaid-fill text-warning me-1"></i> Liver Disease Prediction
+            </a>
+          </li>
+          <li class="mb-2">
+            <a href="{% url 'predict_kidney' %}" class="text-white-50 text-decoration-none">
+              <i class="bi bi-shield-plus text-info me-1"></i> Kidney Disease Prediction
+            </a>
+          </li>
+          <li class="mb-2">
+            <a href="{% url 'predict_breast_cancer' %}" class="text-white-50 text-decoration-none">
+              <i class="bi bi-gender-female me-1" style="color: #d63384;"></i> Breast Cancer Prediction
             </a>
           </li>
         </ul>

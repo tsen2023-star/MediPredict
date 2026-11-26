@@ -2,7 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class PredictionRecord(models.Model):
-    DISEASES = [("heart", "Heart Disease"), ("liver", "Liver Disease"), ("diabetes", "Diabetes")]
+    DISEASES = [
+        ("heart", "Heart Disease"),
+        ("liver", "Liver Disease"),
+        ("diabetes", "Diabetes"),
+        ("kidney", "Kidney Disease"),
+        ("breast_cancer", "Breast Cancer (Diagnostic)"),
+    ]
     LEVELS = [("Low", "Low"), ("Moderate", "Moderate"), ("High", "High")]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     disease = models.CharField(max_length=20, choices=DISEASES)

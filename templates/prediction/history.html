@@ -27,6 +27,12 @@
         <a href="{% url 'predict_liver' %}" class="btn btn-outline-warning text-dark btn-sm">
           <i class="bi bi-bandaid me-1"></i> Liver Check
         </a>
+        <a href="{% url 'predict_kidney' %}" class="btn btn-outline-info text-dark btn-sm">
+          <i class="bi bi-shield-plus me-1"></i> Kidney Check
+        </a>
+        <a href="{% url 'predict_breast_cancer' %}" class="btn btn-sm" style="border: 1px solid #d63384; color: #d63384;">
+          <i class="bi bi-gender-female me-1"></i> Breast Cancer Check
+        </a>
       </div>
     </div>
 
@@ -43,6 +49,8 @@
               <option value="heart" {% if disease_filter == 'heart' %}selected{% endif %}>Heart Disease</option>
               <option value="diabetes" {% if disease_filter == 'diabetes' %}selected{% endif %}>Diabetes</option>
               <option value="liver" {% if disease_filter == 'liver' %}selected{% endif %}>Liver Disease</option>
+              <option value="kidney" {% if disease_filter == 'kidney' %}selected{% endif %}>Chronic Kidney Disease</option>
+              <option value="breast_cancer" {% if disease_filter == 'breast_cancer' %}selected{% endif %}>Breast Cancer</option>
             </select>
           </div>
           {% if disease_filter %}
@@ -86,10 +94,20 @@
                       <span class="badge bg-primary-subtle text-primary px-2 py-1">
                         <i class="bi bi-droplet-fill me-1"></i> Diabetes
                       </span>
-                    {% else %}
+                    {% elif record.disease == 'liver' %}
                       <span class="badge bg-warning-subtle text-dark px-2 py-1">
                         <i class="bi bi-bandaid-fill me-1"></i> Liver Disease
                       </span>
+                    {% elif record.disease == 'kidney' %}
+                      <span class="badge bg-info-subtle text-info px-2 py-1">
+                        <i class="bi bi-shield-plus me-1"></i> Kidney Disease
+                      </span>
+                    {% elif record.disease == 'breast_cancer' %}
+                      <span class="badge px-2 py-1" style="background-color: #fce8f3; color: #d63384;">
+                        <i class="bi bi-gender-female me-1"></i> Breast Cancer
+                      </span>
+                    {% else %}
+                      <span class="badge bg-secondary-subtle text-secondary px-2 py-1">{{ record.get_disease_display }}</span>
                     {% endif %}
                   </td>
                   <td>

@@ -12,6 +12,7 @@ class HospitalTests(TestCase):
             name="AIIMS New Delhi",
             address="Ansari Nagar",
             city="New Delhi",
+            state="Delhi",
             phone="011-26588500",
             emergency_contact="011-26593677",
             specialties="Cardiology, Nephrology, Oncology"
@@ -20,6 +21,7 @@ class HospitalTests(TestCase):
             name="Apollo Hospital",
             address="Greams Road",
             city="Chennai",
+            state="Tamil Nadu",
             phone="044-28290200",
             emergency_contact="1066",
             specialties="Cardiology, Hepatology, Organ Transplant"
@@ -33,8 +35,15 @@ class HospitalTests(TestCase):
         self.client.login(username="testuser", password="Password123!")
         resp = self.client.get(reverse("hospitals"))
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, "AIIMS New Delhi")
+        self.assertGreaterEqual(resp.context["total_count"], 2)
+        self.assertTrue(len(resp.context["page_obj"]) > 0)
+
+    def test_hospital_search_by_state(self):
+        self.client.login(username="testuser", password="Password123!")
+        resp = self.client.get(reverse("hospitals"), {"state": "Tamil Nadu"})
+        self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "Apollo Hospital")
+        self.assertNotContains(resp, "AIIMS New Delhi")
 
     def test_hospital_search_by_city(self):
         self.client.login(username="testuser", password="Password123!")

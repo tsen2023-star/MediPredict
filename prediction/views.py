@@ -10,7 +10,7 @@ from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 
-from .forms import HeartForm, LiverForm, DiabetesForm
+from .forms import HeartForm, LiverForm, DiabetesForm, KidneyForm, BreastCancerForm
 from .models import PredictionRecord
 
 MODEL_DIR = Path(settings.BASE_DIR) / "prediction" / "ml"
@@ -39,6 +39,22 @@ CONFIG = {
         "icon": "bi-droplet-fill",
         "badge": "Metabolic",
         "description": "Examine glucose, BMI, and metabolic markers."
+    },
+    "kidney": {
+        "form": KidneyForm,
+        "file": "kidney_model.pkl",
+        "title": "Kidney Disease (CKD)",
+        "icon": "bi-shield-plus",
+        "badge": "Renal",
+        "description": "Assess kidney filtration efficiency, urea, creatinine, and urinalysis markers."
+    },
+    "breast_cancer": {
+        "form": BreastCancerForm,
+        "file": "breast_cancer_model.pkl",
+        "title": "Breast Cancer (Diagnostic)",
+        "icon": "bi-activity",
+        "badge": "Oncology",
+        "description": "Analyze fine needle aspirate (FNA) cell nucleus characteristics."
     },
 }
 
@@ -77,6 +93,28 @@ SAMPLE_DATA = {
             "alkaline_phosphotase": 380, "alamine_aminotransferase": 85,
             "aspartate_aminotransferase": 110, "total_proteins": 5.8, "albumin": 2.5,
             "albumin_and_globulin_ratio": 0.75
+        }
+    },
+    "kidney": {
+        "normal": {
+            "age": 42, "bp": 75, "sg": 1.020, "al": 0, "su": 0,
+            "bgr": 105, "bu": 24, "sc": 0.9, "sod": 140, "pot": 4.5, "hemo": 15.2
+        },
+        "risk": {
+            "age": 64, "bp": 90, "sg": 1.010, "al": 3, "su": 2,
+            "bgr": 210, "bu": 85, "sc": 3.8, "sod": 130, "pot": 5.8, "hemo": 9.4
+        }
+    },
+    "breast_cancer": {
+        "normal": {
+            "radius_mean": 11.85, "texture_mean": 17.26, "perimeter_mean": 76.53, "area_mean": 434.0,
+            "smoothness_mean": 0.090, "compactness_mean": 0.071, "concavity_mean": 0.038,
+            "concave_points_mean": 0.021, "symmetry_mean": 0.173, "fractal_dimension_mean": 0.062
+        },
+        "risk": {
+            "radius_mean": 17.99, "texture_mean": 21.60, "perimeter_mean": 122.8, "area_mean": 1001.0,
+            "smoothness_mean": 0.118, "compactness_mean": 0.277, "concavity_mean": 0.300,
+            "concave_points_mean": 0.147, "symmetry_mean": 0.241, "fractal_dimension_mean": 0.078
         }
     }
 }
@@ -173,6 +211,66 @@ HEALTH_GUIDANCE = {
                 "Stay active and keep blood sugar and blood pressure within target ranges."
             ],
             "lifestyle": "Enjoy a balanced diet of unrefined whole foods, prioritize 7–8 hours of restful sleep, and stay active.",
+            "status_color": "success"
+        }
+    },
+    "kidney": {
+        "High": {
+            "summary": "Your renal parameters (creatinine, blood urea, albuminuria) indicate elevated risk of chronic kidney impairment.",
+            "recommendations": [
+                "Consult a nephrologist or physician for a comprehensive Renal Function Test (RFT).",
+                "Measure estimated Glomerular Filtration Rate (eGFR) and urine protein-creatinine ratio.",
+                "Strictly manage blood pressure, avoid NSAID painkillers, and restrict excessive dietary sodium."
+            ],
+            "lifestyle": "Ensure appropriate daily fluid intake as advised by your physician, reduce sodium, and monitor blood pressure.",
+            "status_color": "danger"
+        },
+        "Moderate": {
+            "summary": "Some kidney markers (such as borderline urea, specific gravity, or blood pressure) warrant clinical review.",
+            "recommendations": [
+                "Discuss repeat urinalysis and creatinine screening with your primary care provider.",
+                "Review daily medication regimens and ensure optimal hydration."
+            ],
+            "lifestyle": "Maintain a low-sodium, plant-forward diet and avoid unprescribed over-the-counter pain medications.",
+            "status_color": "warning"
+        },
+        "Low": {
+            "summary": "Your kidney filtration markers and urinalysis values align with healthy control reference ranges.",
+            "recommendations": [
+                "Maintain routine periodic health checkups and monitor blood pressure annually.",
+                "Stay mindful of adequate daily hydration."
+            ],
+            "lifestyle": "Drink 2–3 liters of water daily, consume whole fruits and vegetables, and maintain an active routine.",
+            "status_color": "success"
+        }
+    },
+    "breast_cancer": {
+        "High": {
+            "summary": "The cytological nuclear measurements exhibit statistical characteristics associated with tissue malignancy.",
+            "recommendations": [
+                "Consult a specialist surgical oncologist or breast specialist promptly.",
+                "Proceed with clinical breast examination, bilateral digital diagnostic mammography, and ultrasound.",
+                "Discuss histopathological core needle biopsy confirmation with your oncologist."
+            ],
+            "lifestyle": "Follow specialist recommendations promptly and review family history with a medical genetics counselor.",
+            "status_color": "danger"
+        },
+        "Moderate": {
+            "summary": "Some nuclear morphology parameters show borderline variations requiring further diagnostic imaging.",
+            "recommendations": [
+                "Schedule a clinical evaluation and follow-up high-resolution breast ultrasound.",
+                "Review prior imaging for baseline comparison."
+            ],
+            "lifestyle": "Maintain monthly breast self-awareness, an active lifestyle, and scheduled clinical screenings.",
+            "status_color": "warning"
+        },
+        "Low": {
+            "summary": "Your reported cellular nucleus parameters correspond to benign baseline tissue characteristics.",
+            "recommendations": [
+                "Continue standard age-appropriate clinical screening mammograms.",
+                "Maintain periodic routine breast self-awareness."
+            ],
+            "lifestyle": "Maintain regular physical activity, a nutritious balanced diet, and avoid tobacco exposure.",
             "status_color": "success"
         }
     }
@@ -325,6 +423,16 @@ def liver(request):
 @login_required
 def diabetes(request):
     return predict(request, "diabetes")
+
+
+@login_required
+def kidney(request):
+    return predict(request, "kidney")
+
+
+@login_required
+def breast_cancer(request):
+    return predict(request, "breast_cancer")
 
 
 @login_required

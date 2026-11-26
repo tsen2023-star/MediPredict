@@ -6,6 +6,7 @@ class Hospital(models.Model):
     name = models.CharField(max_length=200)
     address = models.TextField()
     city = models.CharField(max_length=100, db_index=True)
+    state = models.CharField(max_length=100, db_index=True, blank=True, default="", help_text="State / Union Territory")
     phone = models.CharField(max_length=50)
     emergency_contact = models.CharField(max_length=50, blank=True, help_text="Emergency / Ambulance helpline")
     website = models.URLField(blank=True, help_text="Official hospital website")
@@ -27,5 +28,6 @@ class Hospital(models.Model):
     def get_map_url(self):
         if self.latitude and self.longitude:
             return f"https://www.google.com/maps/search/?api=1&query={self.latitude},{self.longitude}"
-        query = f"{self.name}, {self.city}"
+        loc_parts = [self.name, self.city, self.state] if self.state else [self.name, self.city]
+        query = ", ".join(loc_parts)
         return f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote_plus(query)}"

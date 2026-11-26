@@ -65,6 +65,8 @@ def dashboard(request):
     heart_count = user_predictions.filter(disease="heart").count()
     diabetes_count = user_predictions.filter(disease="diabetes").count()
     liver_count = user_predictions.filter(disease="liver").count()
+    kidney_count = user_predictions.filter(disease="kidney").count()
+    breast_cancer_count = user_predictions.filter(disease="breast_cancer").count()
 
     recent_history = user_predictions.order_by("-created_at")[:6]
     profile, _ = Profile.objects.get_or_create(user=request.user)
@@ -78,6 +80,8 @@ def dashboard(request):
             "heart_count": heart_count,
             "diabetes_count": diabetes_count,
             "liver_count": liver_count,
+            "kidney_count": kidney_count,
+            "breast_cancer_count": breast_cancer_count,
             "recent_history": recent_history,
         }
     )

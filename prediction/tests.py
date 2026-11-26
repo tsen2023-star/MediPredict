@@ -76,6 +76,51 @@ class PredictionTests(TestCase):
         self.assertContains(resp, "Prediction Outcome")
         self.assertTrue(PredictionRecord.objects.filter(user=self.user1, disease="liver").exists())
 
+    def test_kidney_prediction_evaluation(self):
+        self.client.login(username="patient1", password="Password123!")
+        payload = {
+            "age": 55,
+            "bp": 80,
+            "sg": 1.020,
+            "al": 0,
+            "su": 0,
+            "bgr": 115,
+            "bu": 38,
+            "sc": 1.1,
+            "sod": 140,
+            "pot": 4.4,
+            "hemo": 14.5,
+            "pcv": 44,
+            "htn": 0,
+        }
+        resp = self.client.post(reverse("predict_kidney"), payload)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Prediction Outcome")
+        self.assertTrue(PredictionRecord.objects.filter(user=self.user1, disease="kidney").exists())
+        record = PredictionRecord.objects.get(user=self.user1, disease="kidney")
+        self.assertIn(record.risk_level, ["Low", "Moderate", "High"])
+
+    def test_breast_cancer_prediction_evaluation(self):
+        self.client.login(username="patient1", password="Password123!")
+        payload = {
+            "radius_mean": 17.99,
+            "texture_mean": 10.38,
+            "perimeter_mean": 122.8,
+            "area_mean": 1001.0,
+            "smoothness_mean": 0.1184,
+            "compactness_mean": 0.2776,
+            "concavity_mean": 0.3001,
+            "concave_points_mean": 0.1471,
+            "symmetry_mean": 0.2419,
+            "fractal_dimension_mean": 0.07871,
+        }
+        resp = self.client.post(reverse("predict_breast_cancer"), payload)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Prediction Outcome")
+        self.assertTrue(PredictionRecord.objects.filter(user=self.user1, disease="breast_cancer").exists())
+        record = PredictionRecord.objects.get(user=self.user1, disease="breast_cancer")
+        self.assertIn(record.risk_level, ["Low", "Moderate", "High"])
+
     def test_prediction_detail_authorization_protection(self):
         record1 = PredictionRecord.objects.create(
             user=self.user1,

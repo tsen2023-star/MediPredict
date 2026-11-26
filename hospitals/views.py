@@ -9,21 +9,27 @@ from .models import Hospital
 def hospital_list(request):
     query = request.GET.get("q", "").strip()
     city_filter = request.GET.get("city", "").strip()
+    state_filter = request.GET.get("state", "").strip()
 
-    hospitals = Hospital.objects.all().order_by("city", "name")
+    hospitals = Hospital.objects.all().order_by("state", "city", "name")
 
     if query:
         hospitals = hospitals.filter(
             Q(name__icontains=query) |
             Q(city__icontains=query) |
+            Q(state__icontains=query) |
             Q(specialties__icontains=query) |
             Q(address__icontains=query)
         )
 
+    if state_filter:
+        hospitals = hospitals.filter(state__iexact=state_filter)
+
     if city_filter:
         hospitals = hospitals.filter(city__icontains=city_filter)
 
-    # Distinct cities for quick filtering
+    # Distinct states and cities for quick filtering
+    available_states = [s for s in Hospital.objects.values_list("state", flat=True).distinct().order_by("state") if s]
     available_cities = Hospital.objects.values_list("city", flat=True).distinct().order_by("city")
 
     paginator = Paginator(hospitals, 9)
@@ -37,6 +43,8 @@ def hospital_list(request):
             "page_obj": page_obj,
             "query": query,
             "city_filter": city_filter,
+            "state_filter": state_filter,
+            "available_states": available_states,
             "available_cities": available_cities,
             "total_count": paginator.count,
         }
