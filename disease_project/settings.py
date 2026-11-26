@@ -16,7 +16,7 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
-    "127.0.0.1,localhost"
+    "127.0.0.1,localhost,testserver"
 ).split(",")
 
 # Automatically allow the Render hostname
@@ -141,5 +141,15 @@ STORAGES = {
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "home"
+
+# Email configuration
+EMAIL_BACKEND = os.environ.get(
+    "EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend"
+)
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DEFAULT_FROM_EMAIL",
+    "MediPredict <noreply@medipredict.local>"
+)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

@@ -75,7 +75,7 @@ def load_data(disease, filename, target):
     if target_col is None:
         raise ValueError(f"{filename}: target column '{target}' not found. Available columns: {list(df.columns)}")
     y = df.pop(target_col)
-    y = y.replace({"1": 1, "2": 0, "yes": 1, "no": 0, "Yes": 1, "No": 0,
+    y = y.replace({1: 1, 2: 0, "1": 1, "2": 0, "yes": 1, "no": 0, "Yes": 1, "No": 0,
                    "Male": 1, "Female": 0, "Liver": 1, "No Liver": 0})
     y = pd.to_numeric(y, errors="coerce")
     valid = y.notna()
@@ -88,8 +88,9 @@ def load_data(disease, filename, target):
             rename[col] = aliases[key]
     X = X.rename(columns=rename)
     # Convert gender/sex labels into the numeric form expected by the forms.
-    for col in X.select_dtypes(include="object").columns:
-        X[col] = X[col].replace({"Male": 1, "Female": 0, "male": 1, "female": 0})
+    for col in X.columns:
+        if X[col].dtype == object or str(X[col].dtype).startswith("str"):
+            X[col] = X[col].replace({"Male": 1, "Female": 0, "male": 1, "female": 0})
     X = X.apply(pd.to_numeric, errors="coerce")
     expected = {
         "heart": ["age","sex","cp","trestbps","chol","fbs","restecg","thalach","exang","oldpeak","slope","ca","thal"],

@@ -1303,3 +1303,93 @@ a {
     border-radius: 9px;
     font-weight: 600;
 }
+
+/* ENHANCED HEALTHCARE THEME & UI POLISH */
+
+.transition-hover {
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.transition-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(8, 120, 209, 0.12) !important;
+}
+
+.user-avatar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--dark);
+    background: #f1f6fc;
+    border: 1px solid #d8e5f2;
+    transition: all 0.2s ease;
+}
+
+.user-avatar-btn:hover {
+    background: #e4eef9;
+    color: var(--primary);
+}
+
+.avatar-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.site-nav .dropdown-menu {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(10, 30, 60, 0.1);
+    padding: 8px;
+}
+
+.site-nav .dropdown-item {
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--dark);
+    transition: all 0.15s ease;
+}
+
+.site-nav .dropdown-item:hover {
+    background: var(--secondary);
+    color: var(--primary);
+}
+
+.prediction-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 36px;
+    box-shadow: var(--shadow);
+}
+
+.result-card {
+    transition: all 0.3s ease;
+}
+
+.footer-main .brand-mark {
+    font-size: 24px;
+}
+
+.medical-note {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid #ffb300;
+    padding: 14px 18px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    margin-top: 24px;
+    color: #cbd5e1;
+}
+

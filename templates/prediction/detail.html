@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Record #{{ record.id }} Details | MediPredict{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+  <div class="container">
+
+    <div class="mb-4">
+      <a href="{% url 'prediction_history' %}" class="btn btn-outline-secondary btn-sm mb-3">
+        <i class="bi bi-arrow-left me-1"></i> Back to History
+      </a>
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-1">
+            Prediction Record #{{ record.id }}
+          </span>
+          <h2 class="fw-bold mb-0">{{ record.get_disease_display }} Assessment</h2>
+          <small class="text-muted">Recorded on {{ record.created_at|date:"l, d F Y at H:i" }}</small>
+        </div>
+
+        <form method="POST" action="{% url 'prediction_delete' record.id %}" onsubmit="return confirm('Are you sure you want to delete this record?');">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-trash me-1"></i> Delete Record
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Left Column: Risk Result & Guidance -->
+      <div class="col-lg-5">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
+          <div class="card-body p-4 text-center">
+
+            <span class="text-muted small text-uppercase fw-semibold">Model Risk Score</span>
+            <div class="display-3 fw-extrabold my-2 {% if record.risk_level == 'High' %}text-danger{% elif record.risk_level == 'Moderate' %}text-warning{% else %}text-success{% endif %}">
+              {{ record.risk_score }}%
+            </div>
+
+            <div class="mb-3">
+              {% if record.risk_level == 'High' %}
+                <span class="badge bg-danger fs-6 px-4 py-2 rounded-pill">
+                  <i class="bi bi-exclamation-triangle-fill me-1"></i> High Risk
+                </span>
+              {% elif record.risk_level == 'Moderate' %}
+                <span class="badge bg-warning text-dark fs-6 px-4 py-2 rounded-pill">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i> Moderate Risk
+                </span>
+              {% else %}
+                <span class="badge bg-success fs-6 px-4 py-2 rounded-pill">
+                  <i class="bi bi-shield-check me-1"></i> Low Risk
+                </span>
+              {% endif %}
+            </div>
+
+            <div class="text-muted small border-top pt-3">
+              <div><strong>Evaluation Model:</strong> {{ record.model_used }}</div>
+              <div><strong>User Account:</strong> {{ record.user.username }}</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Health Guidance -->
+        {% if guidance %}
+          <div class="card shadow-sm border-0 rounded-4 p-4 mb-4 bg-light">
+            <h5 class="fw-bold mb-2 text-dark">
+              <i class="bi bi-heart-pulse me-2 text-primary"></i>Health Guidance
+            </h5>
+            <p class="text-secondary small mb-3">{{ guidance.summary }}</p>
+
+            <h6 class="fw-semibold text-dark small mb-2">Recommended Clinical Actions:</h6>
+            <ul class="text-secondary small ps-3 mb-3">
+              {% for item in guidance.recommendations %}
+                <li class="mb-1">{{ item }}</li>
+              {% endfor %}
+            </ul>
+
+            <div class="border-top pt-2">
+              <strong class="text-dark small">Lifestyle Guidance:</strong>
+              <p class="text-secondary small mb-0">{{ guidance.lifestyle }}</p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Right Column: Submitted Input Parameters -->
+      <div class="col-lg-7">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+          <div class="card-header bg-white border-bottom p-4">
+            <h5 class="fw-bold mb-1">Submitted Clinical Parameters</h5>
+            <p class="text-muted small mb-0">Exact biometric measurements supplied during this risk assessment.</p>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-striped align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-4">Parameter Name</th>
+                    <th class="text-end pe-4">Recorded Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for key, value in record.input_data.items %}
+                    <tr>
+                      <td class="ps-4 text-dark fw-medium">
+                        {{ key|title }}
+                      </td>
+                      <td class="text-end pe-4 fw-semibold text-primary">
+                        {{ value }}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Safety Notice -->
+        <div class="alert alert-light border small text-muted mt-4">
+          <i class="bi bi-info-circle-fill me-1 text-primary"></i>
+          This retrospective record is preserved for educational self-tracking and awareness. It is not an official medical record and should not be used as the sole basis for clinical treatment.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+{% endblock %}

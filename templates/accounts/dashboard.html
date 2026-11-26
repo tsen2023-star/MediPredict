@@ -1,5 +1,5 @@
-
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Dashboard | MediPredict{% endblock %}
 
@@ -7,120 +7,306 @@
 <section class="dashboard-section section-padding">
   <div class="container">
 
-    <div class="dashboard-heading">
-      <div>
-        <span class="eyebrow">YOUR PERSONAL SPACE</span>
-        <h2>Welcome, {{ request.user.username }}!</h2>
-        <p>Explore prediction modules and review your previous results.</p>
+    <!-- Welcome & Profile Summary Card -->
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-5 bg-white">
+      <div class="card-body p-4 p-md-5">
+        <div class="row align-items-center g-4">
+
+          <div class="col-lg-8">
+            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-2">
+              <i class="bi bi-person-check-fill me-1"></i> Patient Portal
+            </span>
+            <h1 class="display-6 fw-bold mb-1">
+              Welcome, {{ request.user.first_name|default:request.user.username }}!
+            </h1>
+            <p class="text-muted mb-3">
+              Your personalized health risk assessment dashboard and historical records.
+            </p>
+
+            <div class="d-flex flex-wrap gap-3 text-secondary small">
+              <div>
+                <i class="bi bi-person me-1 text-primary"></i> <strong>Username:</strong> {{ request.user.username }}
+              </div>
+              {% if request.user.email %}
+                <div>
+                  <i class="bi bi-envelope me-1 text-primary"></i> <strong>Email:</strong> {{ request.user.email }}
+                </div>
+              {% endif %}
+              {% if profile.city %}
+                <div>
+                  <i class="bi bi-geo-alt me-1 text-primary"></i> <strong>Location:</strong> {{ profile.city }}
+                </div>
+              {% endif %}
+              <div>
+                <i class="bi bi-calendar3 me-1 text-primary"></i> <strong>Joined:</strong> {{ request.user.date_joined|date:"M Y" }}
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 text-lg-end">
+            <div class="d-flex flex-lg-column gap-2 justify-content-lg-end flex-wrap">
+              <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-person-gear me-1"></i> Account Settings
+              </a>
+              <a href="{% url 'prediction_history' %}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-clock-history me-1"></i> All Records ({{ total_predictions }})
+              </a>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <a href="{% url 'home' %}" class="btn btn-outline-primary">
-        <i class="bi bi-house me-1"></i> Home
-      </a>
     </div>
 
+    <!-- Analytics Stats Strip -->
     <div class="row g-4 mb-5">
-      <div class="col-md-4">
-        <div class="dashboard-stat">
-          <div class="stat-icon"><i class="bi bi-heart-pulse"></i></div>
-          <span>Prediction modules</span>
-          <h3>03</h3>
-          <small>Available modules</small>
+      <div class="col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 rounded-4 p-4 h-100 bg-white">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted small fw-semibold text-uppercase">Total Assessments</span>
+            <div class="bg-primary-subtle text-primary p-2 rounded-3"><i class="bi bi-clipboard2-pulse fs-5"></i></div>
+          </div>
+          <h2 class="fw-extrabold text-dark mb-0">{{ total_predictions }}</h2>
+          <small class="text-muted">Saved prediction records</small>
         </div>
       </div>
 
-      <div class="col-md-4">
-        <div class="dashboard-stat">
-          <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
-          <span>Prediction history</span>
-          <h3>{{ history|length|default:"0" }}</h3>
-          <small>Saved records</small>
+      <div class="col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 rounded-4 p-4 h-100 bg-white">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted small fw-semibold text-uppercase">Heart Checks</span>
+            <div class="bg-danger-subtle text-danger p-2 rounded-3"><i class="bi bi-heart-pulse-fill fs-5"></i></div>
+          </div>
+          <h2 class="fw-extrabold text-danger mb-0">{{ heart_count }}</h2>
+          <small class="text-muted">Cardiovascular assessments</small>
         </div>
       </div>
 
-      <div class="col-md-4">
-        <div class="dashboard-stat">
-          <div class="stat-icon"><i class="bi bi-person-check"></i></div>
-          <span>Account status</span>
-          <h3>Active</h3>
-          <small>Logged-in account</small>
-        </div>
-      </div>
-    </div>
-
-    <div class="section-heading dashboard-subheading">
-      <span class="eyebrow">GET STARTED</span>
-      <h2>Choose a prediction module</h2>
-    </div>
-
-    <div class="row g-4 mb-5">
-      <div class="col-md-4">
-        <div class="disease-card">
-          <div class="disease-icon heart-icon"><i class="bi bi-heart-pulse-fill"></i></div>
-          <h4>Heart Disease</h4>
-          <p>Explore preliminary cardiovascular risk estimates.</p>
-          <a href="{% url 'predict_heart' %}" class="disease-link">Open module <i class="bi bi-arrow-right"></i></a>
+      <div class="col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 rounded-4 p-4 h-100 bg-white">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted small fw-semibold text-uppercase">Diabetes Checks</span>
+            <div class="bg-primary-subtle text-primary p-2 rounded-3"><i class="bi bi-droplet-fill fs-5"></i></div>
+          </div>
+          <h2 class="fw-extrabold text-primary mb-0">{{ diabetes_count }}</h2>
+          <small class="text-muted">Metabolic glucose tests</small>
         </div>
       </div>
 
-      <div class="col-md-4">
-        <div class="disease-card">
-          <div class="disease-icon diabetes-icon"><i class="bi bi-droplet-fill"></i></div>
-          <h4>Diabetes</h4>
-          <p>Explore a prediction using selected health parameters.</p>
-          <a href="{% url 'predict_diabetes' %}" class="disease-link">Open module <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="disease-card">
-          <div class="disease-icon liver-icon"><i class="bi bi-bandaid-fill"></i></div>
-          <h4>Liver Disease</h4>
-          <p>Explore preliminary liver-related risk estimates.</p>
-          <a href="{% url 'predict_liver' %}" class="disease-link">Open module <i class="bi bi-arrow-right"></i></a>
+      <div class="col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 rounded-4 p-4 h-100 bg-white">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted small fw-semibold text-uppercase">Liver Checks</span>
+            <div class="bg-warning-subtle text-dark p-2 rounded-3"><i class="bi bi-bandaid-fill fs-5"></i></div>
+          </div>
+          <h2 class="fw-extrabold text-dark mb-0">{{ liver_count }}</h2>
+          <small class="text-muted">Hepatic enzyme assessments</small>
         </div>
       </div>
     </div>
 
-    <div class="history-card">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <!-- Available Prediction Modules -->
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
         <div>
-          <span class="eyebrow">YOUR RECORDS</span>
-          <h4 class="mb-0">Recent prediction history</h4>
+          <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill fw-semibold mb-1">
+            Machine Learning Engine
+          </span>
+          <h3 class="fw-bold mb-0">Available Prediction Modules</h3>
         </div>
       </div>
 
-      {% if history %}
+      <div class="row g-4">
+        <!-- Heart Disease Card -->
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0 rounded-4 h-100 p-4 transition-hover bg-white border-top border-4 border-danger">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                <i class="bi bi-heart-pulse-fill fs-5"></i>
+              </div>
+              <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill">13 Parameters</span>
+            </div>
+            <h4 class="fw-bold mb-2">Heart Disease</h4>
+            <p class="text-muted small mb-4">
+              Assesses cardiovascular metrics including cholesterol, blood pressure, resting ECG, and fluoroscopy vessels.
+            </p>
+            <a href="{% url 'predict_heart' %}" class="btn btn-outline-danger w-100 mt-auto">
+              Start Heart Assessment <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Diabetes Card -->
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0 rounded-4 h-100 p-4 transition-hover bg-white border-top border-4 border-primary">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                <i class="bi bi-droplet-fill fs-5"></i>
+              </div>
+              <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill">8 Parameters</span>
+            </div>
+            <h4 class="fw-bold mb-2">Diabetes</h4>
+            <p class="text-muted small mb-4">
+              Evaluates plasma glucose, BMI, insulin, pedigree family factor, and blood pressure against benchmark data.
+            </p>
+            <a href="{% url 'predict_diabetes' %}" class="btn btn-outline-primary w-100 mt-auto">
+              Start Diabetes Assessment <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Liver Disease Card -->
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0 rounded-4 h-100 p-4 transition-hover bg-white border-top border-4 border-warning">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                <i class="bi bi-bandaid-fill fs-5"></i>
+              </div>
+              <span class="badge bg-warning-subtle text-dark px-3 py-1 rounded-pill">10 Parameters</span>
+            </div>
+            <h4 class="fw-bold mb-2">Liver Disease</h4>
+            <p class="text-muted small mb-4">
+              Analyzes total bilirubin, direct bilirubin, alkaline phosphatase, SGPT, SGOT, and albumin-to-globulin ratio.
+            </p>
+            <a href="{% url 'predict_liver' %}" class="btn btn-outline-warning text-dark w-100 mt-auto">
+              Start Liver Assessment <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent History Section -->
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-5">
+      <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <h4 class="fw-bold mb-0">Recent Prediction History</h4>
+          <small class="text-muted">Your latest generated risk assessments</small>
+        </div>
+        {% if recent_history %}
+          <a href="{% url 'prediction_history' %}" class="btn btn-outline-primary btn-sm">
+            View All Records <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        {% endif %}
+      </div>
+
+      {% if recent_history %}
         <div class="table-responsive">
-          <table class="table align-middle">
-            <thead>
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-muted small text-uppercase">
               <tr>
-                <th>Date</th>
-                <th>Disease</th>
-                <th>Risk score</th>
-                <th>Risk level</th>
-                <th>Model</th>
+                <th class="ps-4">Date</th>
+                <th>Disease Condition</th>
+                <th>Model Risk Score</th>
+                <th>Risk Category</th>
+                <th>Model Used</th>
+                <th class="text-end pe-4">Action</th>
               </tr>
             </thead>
             <tbody>
-              {% for item in history %}
+              {% for item in recent_history %}
                 <tr>
-                  <td>{{ item.created_at|date:"d M Y, H:i" }}</td>
-                  <td>{{ item.get_disease_display }}</td>
-                  <td>{{ item.risk_score|default:"—" }}</td>
-                  <td>{{ item.risk_level|default:"—" }}</td>
-                  <td>{{ item.model_used|default:"—" }}</td>
+                  <td class="ps-4 text-dark fw-medium">
+                    <i class="bi bi-calendar3 me-1 text-muted"></i>{{ item.created_at|date:"d M Y, H:i" }}
+                  </td>
+                  <td>
+                    {% if item.disease == 'heart' %}
+                      <span class="badge bg-danger-subtle text-danger"><i class="bi bi-heart-pulse-fill me-1"></i> Heart Disease</span>
+                    {% elif item.disease == 'diabetes' %}
+                      <span class="badge bg-primary-subtle text-primary"><i class="bi bi-droplet-fill me-1"></i> Diabetes</span>
+                    {% else %}
+                      <span class="badge bg-warning-subtle text-dark"><i class="bi bi-bandaid-fill me-1"></i> Liver Disease</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <span class="fw-bold">{{ item.risk_score }}%</span>
+                  </td>
+                  <td>
+                    {% if item.risk_level == 'High' %}
+                      <span class="badge bg-danger">High Risk</span>
+                    {% elif item.risk_level == 'Moderate' %}
+                      <span class="badge bg-warning text-dark">Moderate Risk</span>
+                    {% else %}
+                      <span class="badge bg-success">Low Risk</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-secondary small">{{ item.model_used|default:"Random Forest" }}</td>
+                  <td class="text-end pe-4">
+                    <a href="{% url 'prediction_detail' item.id %}" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-eye me-1"></i> View
+                    </a>
+                  </td>
                 </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
       {% else %}
-        <div class="empty-state">
-          <i class="bi bi-clipboard2-data"></i>
-          <h5>No prediction records yet</h5>
-          <p>Your saved prediction history will appear here.</p>
+        <div class="card-body text-center py-5">
+          <i class="bi bi-clipboard2-data text-muted fs-1 mb-2 d-block"></i>
+          <h5 class="fw-bold mb-1">No prediction history yet</h5>
+          <p class="text-muted small mb-3">Choose a disease prediction module above to generate your first assessment.</p>
+          <a href="{% url 'predict_heart' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-heart-pulse me-1"></i> Check Heart Risk
+          </a>
         </div>
       {% endif %}
+    </div>
+
+    <!-- Health Awareness & Fast Navigation Strip -->
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="card shadow-sm border-0 rounded-4 p-4 h-100 bg-white">
+          <h5 class="fw-bold mb-3 text-dark">
+            <i class="bi bi-lightbulb-fill text-warning me-2"></i>Daily Health Awareness
+          </h5>
+          <div class="mb-3">
+            <strong class="d-block text-dark small">Cardiovascular Health:</strong>
+            <p class="text-secondary small mb-2">Maintain at least 150 minutes of moderate aerobic activity weekly and limit daily sodium consumption below 2,000 mg.</p>
+          </div>
+          <div class="mb-3">
+            <strong class="d-block text-dark small">Metabolic Wellness:</strong>
+            <p class="text-secondary small mb-2">Prioritize foods with low glycemic index, increase dietary fiber to 30g daily, and monitor fasting blood sugar periodically.</p>
+          </div>
+          <div>
+            <strong class="d-block text-dark small">Hepatic Protection:</strong>
+            <p class="text-secondary small mb-0">Avoid unnecessary over-the-counter medication combinations, stay adequately hydrated, and restrict alcoholic beverages.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card shadow-sm border-0 rounded-4 p-4 h-100 bg-white">
+          <h5 class="fw-bold mb-3 text-dark">
+            <i class="bi bi-compass-fill text-primary me-2"></i>Quick Navigation
+          </h5>
+          <div class="d-grid gap-2">
+            <a href="{% url 'hospitals' %}" class="btn btn-outline-secondary d-flex align-items-center justify-content-between p-3 text-start">
+              <div>
+                <strong class="d-block text-dark"><i class="bi bi-hospital me-2 text-primary"></i>Hospitals & Healthcare Directory</strong>
+                <small class="text-muted">Find verified hospitals, contact details, and locations</small>
+              </div>
+              <i class="bi bi-chevron-right text-muted"></i>
+            </a>
+
+            <a href="{% url 'chatbot' %}" class="btn btn-outline-secondary d-flex align-items-center justify-content-between p-3 text-start">
+              <div>
+                <strong class="d-block text-dark"><i class="bi bi-robot me-2 text-primary"></i>Health Assistant Chatbot</strong>
+                <small class="text-muted">Ask questions about preventative care, symptoms, and tool usage</small>
+              </div>
+              <i class="bi bi-chevron-right text-muted"></i>
+            </a>
+
+            <a href="{% url 'feedback' %}" class="btn btn-outline-secondary d-flex align-items-center justify-content-between p-3 text-start">
+              <div>
+                <strong class="d-block text-dark"><i class="bi bi-chat-square-heart me-2 text-primary"></i>Submit Application Feedback</strong>
+                <small class="text-muted">Rate your experience and suggest improvements</small>
+              </div>
+              <i class="bi bi-chevron-right text-muted"></i>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>

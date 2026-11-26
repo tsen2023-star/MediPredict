@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile | MediPredict{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+
+        <div class="mb-4">
+          <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm mb-2">
+            <i class="bi bi-arrow-left me-1"></i> Back to Profile
+          </a>
+          <h2 class="fw-bold">Edit Profile</h2>
+          <p class="text-muted">Update your contact information and personal details.</p>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-4 p-4 p-md-5">
+          <form method="POST" novalidate>
+            {% csrf_token %}
+
+            <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">User Information</h5>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="{{ u_form.first_name.id_for_label }}">First Name</label>
+                {{ u_form.first_name }}
+                {% for error in u_form.first_name.errors %}
+                  <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="{{ u_form.last_name.id_for_label }}">Last Name</label>
+                {{ u_form.last_name }}
+                {% for error in u_form.last_name.errors %}
+                  <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-semibold" for="{{ u_form.email.id_for_label }}">Email Address</label>
+                {{ u_form.email }}
+                {% for error in u_form.email.errors %}
+                  <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">Contact Details</h5>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="{{ p_form.phone.id_for_label }}">Phone Number</label>
+                {{ p_form.phone }}
+                {% for error in p_form.phone.errors %}
+                  <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="{{ p_form.city.id_for_label }}">City / Location</label>
+                {{ p_form.city }}
+                {% for error in p_form.city.errors %}
+                  <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-1"></i> Save Changes
+              </button>
+              <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

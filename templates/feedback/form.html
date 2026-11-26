@@ -1,78 +1,134 @@
-
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Feedback | MediPredict{% endblock %}
+{% block title %}Share Your Feedback | MediPredict{% endblock %}
 
 {% block content %}
-<section class="auth-section">
+<section class="section-padding">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-lg-7 col-md-9">
+      <div class="col-lg-8">
 
-        <div class="auth-card">
-          <div class="text-center mb-4">
-            <div class="auth-icon mx-auto mb-3">
-              <i class="bi bi-chat-square-heart"></i>
-            </div>
-            <span class="eyebrow">YOUR OPINION MATTERS</span>
-            <h2>Share your feedback</h2>
-            <p class="auth-description">
-              Tell us about your experience using MediPredict.
-            </p>
-          </div>
+        <div class="section-heading text-center mb-4">
+          <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-2">
+            <i class="bi bi-chat-square-heart me-1"></i> Community Insights
+          </span>
+          <h1 class="display-6 fw-bold">Share Your Experience</h1>
+          <p class="lead text-muted mx-auto" style="max-width: 600px;">
+            Your feedback directly informs our machine learning improvements, UI refinements, and clinical awareness clarity.
+          </p>
+        </div>
 
-          {% if messages %}
-            {% for message in messages %}
-              <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-
-          <form method="POST">
+        <!-- Feedback Submission Card -->
+        <div class="card shadow-sm border-0 rounded-4 p-4 p-md-5 mb-5 bg-white">
+          <form method="POST" novalidate id="feedbackForm">
             {% csrf_token %}
 
-            {% if form %}
-              {% for field in form %}
-                <div class="mb-3">
-                  <label class="form-label" for="{{ field.id_for_label }}">
-                    {{ field.label }}
-                  </label>
-                  {{ field }}
-                  {% for error in field.errors %}
-                    <div class="text-danger small">{{ error }}</div>
-                  {% endfor %}
-                </div>
-              {% endfor %}
-            {% else %}
-              <div class="mb-3">
-                <label class="form-label" for="feedback_subject">Subject</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="feedback_subject"
-                  name="subject"
-                  placeholder="Enter feedback subject"
-                  required
-                >
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label" for="feedback_message">Message</label>
-                <textarea
-                  class="form-control"
-                  id="feedback_message"
-                  name="message"
-                  rows="5"
-                  placeholder="Write your feedback..."
-                  required
-                ></textarea>
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger mb-4">
+                {{ form.non_field_errors }}
               </div>
             {% endif %}
 
-            <button type="submit" class="btn btn-primary w-100">
-              Submit feedback <i class="bi bi-send ms-2"></i>
-            </button>
+            <div class="row g-3">
+
+              <div class="col-md-8">
+                <label class="form-label fw-semibold" for="{{ form.subject.id_for_label }}">
+                  Feedback Subject / Headline
+                </label>
+                {{ form.subject }}
+                {% for error in form.subject.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" for="{{ form.category.id_for_label }}">
+                  Category
+                </label>
+                {{ form.category }}
+                {% for error in form.category.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold" for="{{ form.rating.id_for_label }}">
+                  Overall Application Rating
+                </label>
+                {{ form.rating }}
+                <div class="form-text text-muted small">
+                  Select your rating from 1 (Poor) to 5 (Excellent).
+                </div>
+                {% for error in form.rating.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold" for="{{ form.message.id_for_label }}">
+                  Detailed Feedback & Comments
+                </label>
+                {{ form.message }}
+                <div class="form-text text-muted small">
+                  Minimum 10 characters. Mention specific aspects (predictions, layout, speed, hospital listings).
+                </div>
+                {% for error in form.message.errors %}
+                  <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+              </div>
+
+            </div>
+
+            <div class="mt-4 pt-3 border-top d-flex gap-2 align-items-center">
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-send-fill me-2"></i> Submit Feedback
+              </button>
+              <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                Cancel
+              </a>
+            </div>
           </form>
         </div>
+
+        <!-- Previous Submissions by User -->
+        {% if user_feedbacks %}
+          <div class="card shadow-sm border-0 rounded-4 overflow-hidden bg-white mb-4">
+            <div class="card-header bg-white border-bottom p-4">
+              <h5 class="fw-bold mb-0">Your Recent Feedback Submissions</h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="list-group list-group-flush">
+                {% for fb in user_feedbacks %}
+                  <div class="list-group-item p-4">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                      <h6 class="fw-bold text-dark mb-0">{{ fb.subject }}</h6>
+                      <div class="text-warning">
+                        {% for i in "12345" %}
+                          {% if forloop.counter <= fb.rating %}
+                            <i class="bi bi-star-fill"></i>
+                          {% else %}
+                            <i class="bi bi-star"></i>
+                          {% endif %}
+                        {% endfor %}
+                        <span class="text-muted small ms-1">({{ fb.rating }}/5)</span>
+                      </div>
+                    </div>
+                    <span class="badge bg-secondary-subtle text-secondary mb-2">{{ fb.get_category_display }}</span>
+                    <p class="text-secondary small mb-2">{{ fb.message }}</p>
+                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Submitted on {{ fb.created_at|date:"d M Y, H:i" }}</small>
+                    {% if fb.admin_response %}
+                      <div class="mt-2 p-3 bg-light rounded-3 border-start border-primary border-3">
+                        <strong class="d-block small text-dark"><i class="bi bi-reply-fill text-primary me-1"></i> Admin Response:</strong>
+                        <p class="small text-secondary mb-0">{{ fb.admin_response }}</p>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
 
       </div>
     </div>
